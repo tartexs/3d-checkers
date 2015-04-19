@@ -1,7 +1,7 @@
 package checkers.gui.panels;
 
-import checkers.util.Texture;
-import checkers.util.Settings;
+import checkers.common.Texture;
+import checkers.common.Settings;
 import java.awt.Toolkit;
 import java.util.ResourceBundle;
 import javax.swing.ImageIcon;
@@ -13,7 +13,7 @@ import javax.swing.ImageIcon;
  * @author Cristian Tardivo
  */
 public class LoadingPanel extends javax.swing.JPanel {
-    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/util/lang");
+    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/common/lang");
 
     /**
      * Creates new form LoadingPanel
@@ -25,10 +25,10 @@ public class LoadingPanel extends javax.swing.JPanel {
         imageIcon.setImageObserver(gif_lbl);
         // Set size (height) to window height (take off menubar and window title size)
         int height;
-        if(Settings.getInstance().isMaximized() == 6)
+        if(Settings.isMaximized() == 6)
             height = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight();
         else
-            height = Settings.getInstance().getSize().height;
+            height = Settings.getSize().height;
         setMaximumSize(new java.awt.Dimension(0, height - 100));
         setMinimumSize(new java.awt.Dimension(0, height - 100));
         setPreferredSize(new java.awt.Dimension(0, height - 100));

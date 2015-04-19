@@ -2,8 +2,8 @@ package checkers.ia;
 
 import checkers.model.Board;
 import checkers.model.Model;
-import checkers.util.Pair;
-import checkers.util.Point;
+import checkers.common.Pair;
+import checkers.common.Point;
 
 /***
  * Class iaModel

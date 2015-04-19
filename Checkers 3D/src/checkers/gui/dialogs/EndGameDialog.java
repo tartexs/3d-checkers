@@ -1,7 +1,7 @@
 package checkers.gui.dialogs;
 
 import checkers.model.Player;
-import checkers.util.Cronometer;
+import checkers.common.Cronometer;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ResourceBundle;
@@ -17,7 +17,7 @@ import javax.swing.KeyStroke;
  * @author Cristian Tardivo
  */
 public class EndGameDialog extends javax.swing.JDialog {
-    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/util/lang");
+    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/common/lang");
 
    /**
     * Create new EndGameDialog

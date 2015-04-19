@@ -2,14 +2,14 @@ package checkers.logic;
 
 import checkers.ia.iaPlayer;
 import checkers.gui.MainView;
-import checkers.util.Settings;
+import checkers.common.Settings;
 import checkers.model.Model;
 import checkers.model.Player;
 import checkers.network.DMessage;
 import checkers.network.DNetwork;
-import checkers.util.Cronometer;
-import checkers.util.Pair;
-import checkers.util.Point;
+import checkers.common.Cronometer;
+import checkers.common.Pair;
+import checkers.common.Point;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
@@ -23,7 +23,7 @@ import java.util.ResourceBundle;
  * @author Cristian Tardivo
  */
 public class Controller implements Observer {
-    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/util/lang");
+    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/common/lang");
     private iaPlayer iaPlayer;
     private DNetwork network;
     private Logic logic;
@@ -42,6 +42,12 @@ public class Controller implements Observer {
         logic = newLogic;
         view = newView;
         model = logic.getModel();
+    }
+    
+    /**
+     * Start controller Components
+     */
+    public void init() {
         model.getCronometer().addObserver(this);
         model.addObserver(this);
         view.addObserver(this);
@@ -54,18 +60,18 @@ public class Controller implements Observer {
      */
     private void startLocalGame(){
         // Get New Game Settings
-        model.getPlayerA().setName(Settings.getInstance().getNamePlayerA());
-        model.getPlayerA().setColor(Settings.getInstance().getColorPlayerA());
-        model.getPlayerA().setType(Settings.getInstance().getTypePlayerA());
-        model.getPlayerB().setName(Settings.getInstance().getNamePlayerB());
-        model.getPlayerB().setColor(Settings.getInstance().getColorPlayerB());
-        model.getPlayerB().setType(Settings.getInstance().getTypePlayerB());
+        model.getPlayerA().setName(Settings.getNamePlayerA());
+        model.getPlayerA().setColor(Settings.getColorPlayerA());
+        model.getPlayerA().setType(Settings.getTypePlayerA());
+        model.getPlayerB().setName(Settings.getNamePlayerB());
+        model.getPlayerB().setColor(Settings.getColorPlayerB());
+        model.getPlayerB().setType(Settings.getTypePlayerB());
         // Start Game
         startGame();
         // Create IA if Necessary
         if(model.getPlayerA().isIA() || model.getPlayerB().isIA()){
             iaPlayer = new iaPlayer(logic);
-            iaPlayer.setDifficultLevel(Settings.getInstance().getDifficult());
+            iaPlayer.setDifficultLevel(Settings.getDifficult());
             iaPlayer.addObserver(this);
         }
         // First Player IA Move
@@ -79,12 +85,12 @@ public class Controller implements Observer {
      */
     private void startRemoteGame(){
         // Get New Game Settings
-        model.getPlayerA().setName(Settings.getInstance().getNamePlayerA());
-        model.getPlayerA().setColor(Settings.getInstance().getColorPlayerA());
-        model.getPlayerA().setType(Settings.getInstance().getTypePlayerA());
-        model.getPlayerB().setName(Settings.getInstance().getNamePlayerB());
-        model.getPlayerB().setColor(Settings.getInstance().getColorPlayerB());
-        model.getPlayerB().setType(Settings.getInstance().getTypePlayerB());
+        model.getPlayerA().setName(Settings.getNamePlayerA());
+        model.getPlayerA().setColor(Settings.getColorPlayerA());
+        model.getPlayerA().setType(Settings.getTypePlayerA());
+        model.getPlayerB().setName(Settings.getNamePlayerB());
+        model.getPlayerB().setColor(Settings.getColorPlayerB());
+        model.getPlayerB().setType(Settings.getTypePlayerB());
         // Start Game
         view.enableChat(true);
         startGame();
@@ -150,6 +156,7 @@ public class Controller implements Observer {
      */
     private void createRemoteGame(){
         network = new DNetwork(true,this);
+        network.initDNetwork();
     }
     
     /**
@@ -157,6 +164,7 @@ public class Controller implements Observer {
      */
     private void conectRemoteGame(){
         network = new DNetwork(false,this);
+        network.initDNetwork();
     }
     
     /**
@@ -210,6 +218,7 @@ public class Controller implements Observer {
      * @param obj observable object
      * @param arg notify command
      */
+    @Override
     public void update(Observable obj, Object arg){
         // String Comand
         if(arg instanceof String){
@@ -274,14 +283,14 @@ public class Controller implements Observer {
             }       
             // Send server data to client when server connects with client
             if(command.equals("SERVER_CONNECT")){
-                network.sendData("SERVER_NAME", Settings.getInstance().getNamePlayerA());
-                network.sendData("SERVER_COLOR", Settings.getInstance().getColorPlayerA().toString());
+                network.sendData("SERVER_NAME", Settings.getNamePlayerA());
+                network.sendData("SERVER_COLOR", Settings.getColorPlayerA().toString());
                 network.sendCommand("START_REMOTE");
                 return;
             }
             // Send client data to server when client connects with server
             if(command.equals("CLIENT_CONNECT")){
-                network.sendData("CLIENT_NAME", Settings.getInstance().getNamePlayerB());
+                network.sendData("CLIENT_NAME", Settings.getNamePlayerB());
                 network.sendCommand("START_REMOTE");
                 return;
             }
@@ -360,18 +369,18 @@ public class Controller implements Observer {
            }
            // Get Server Name
            if(command.equals("SERVER_NAME")){
-               Settings.getInstance().setNamePlayerA((String)message.getData());
+               Settings.setNamePlayerA((String)message.getData());
                return;
            }
            // Get Server Color
            if(command.equals("SERVER_COLOR")){
-               Settings.getInstance().setColorPlayerA(message.getData().equals("red")?Player.Color.red:Player.Color.black);
-               Settings.getInstance().setColorPlayerB(message.getData().equals("red")?Player.Color.black:Player.Color.red);
+               Settings.setColorPlayerA(message.getData().equals("red")?Player.Color.red:Player.Color.black);
+               Settings.setColorPlayerB(message.getData().equals("red")?Player.Color.black:Player.Color.red);
                return;
            }
            // Get Client Name
            if(command.equals("CLIENT_NAME")){
-               Settings.getInstance().setNamePlayerB((String)message.getData());
+               Settings.setNamePlayerB((String)message.getData());
                return;
            }
            // Chat Message

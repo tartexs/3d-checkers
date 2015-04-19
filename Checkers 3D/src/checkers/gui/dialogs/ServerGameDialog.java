@@ -2,7 +2,7 @@ package checkers.gui.dialogs;
 
 import checkers.model.Player;
 import checkers.model.Player.Color;
-import checkers.util.Settings;
+import checkers.common.Settings;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ResourceBundle;
@@ -19,7 +19,7 @@ import javax.swing.KeyStroke;
  * @author Cristian Tardivo
  */
 public class ServerGameDialog extends javax.swing.JDialog {
-    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/util/lang");
+    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/common/lang");
     private boolean result;
     
     /**
@@ -31,15 +31,15 @@ public class ServerGameDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         // Set default Values
-        name_field.setText(Settings.getInstance().getNamePlayerA());
-        if(Settings.getInstance().getColorPlayerA().equals(Color.red)){
+        name_field.setText(Settings.getNamePlayerA());
+        if(Settings.getColorPlayerA().equals(Color.red)){
             red_but.setSelected(true);
             black_but.setSelected(false);
         } else {
             red_but.setSelected(false);
             black_but.setSelected(true);
         }
-        port_field.setText(Settings.getInstance().getPort()+"");
+        port_field.setText(Settings.getPort()+"");
         this.getRootPane().setDefaultButton(accept_but);
         // Key ESCAPE action
         KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
@@ -211,11 +211,11 @@ public class ServerGameDialog extends javax.swing.JDialog {
             name_field.requestFocus();
             return;
         }
-        Settings.getInstance().setNamePlayerA(name_field.getText());
-        Settings.getInstance().setColorPlayerA(red_but.isSelected()?Color.red:Color.black);
-        Settings.getInstance().setTypePlayerA(Player.Type.local);
-        Settings.getInstance().setColorPlayerB(red_but.isSelected()?Color.black:Color.red);
-        Settings.getInstance().setTypePlayerB(Player.Type.remote);
+        Settings.setNamePlayerA(name_field.getText());
+        Settings.setColorPlayerA(red_but.isSelected()?Color.red:Color.black);
+        Settings.setTypePlayerA(Player.Type.local);
+        Settings.setColorPlayerB(red_but.isSelected()?Color.black:Color.red);
+        Settings.setTypePlayerB(Player.Type.remote);
         result = true;
         dispose();
     }//GEN-LAST:event_accept_butActionPerformed

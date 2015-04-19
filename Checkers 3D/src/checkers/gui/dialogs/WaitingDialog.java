@@ -1,6 +1,6 @@
 package checkers.gui.dialogs;
 
-import checkers.util.Texture;
+import checkers.common.Texture;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ResourceBundle;
@@ -17,7 +17,7 @@ import javax.swing.KeyStroke;
  * @author Cristian Tardivo
  */
 public class WaitingDialog extends javax.swing.JDialog {
-    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/util/lang");
+    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/common/lang");
     private boolean result;
     
     /**

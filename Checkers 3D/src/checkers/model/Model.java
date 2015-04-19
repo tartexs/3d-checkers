@@ -3,8 +3,8 @@ package checkers.model;
 import checkers.model.Board.Cells;
 import checkers.model.Player.Color;
 import checkers.model.Player.Type;
-import checkers.util.Cronometer;
-import checkers.util.Point;
+import checkers.common.Cronometer;
+import checkers.common.Point;
 import java.util.Observable;
 
 

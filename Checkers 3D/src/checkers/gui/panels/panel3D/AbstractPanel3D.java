@@ -33,20 +33,21 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.CameraControl;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Quad;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.texture.Texture;
 import com.jme3.ui.Picture;
-import java.util.Random;
-//
-import checkers.util.Point;
-import checkers.util.Settings;
 import com.jme3.font.BitmapText;
 import com.jme3.material.RenderState.BlendMode;
-import com.jme3.scene.shape.Quad;
 import com.jme3.system.JmeCanvasContext;
+import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
+//
+import checkers.common.Point;
+import checkers.common.Settings;
+
 
 
 
@@ -89,7 +90,7 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
     // Board Height
     private float boardHeight;
     // Shadows Map Size
-    private int SHADOWMAP_SIZE = Settings.getInstance().getShadowsMapSize();
+    private int SHADOWMAP_SIZE = Settings.getShadowsMapSize();
     // Camera Data
     // Las Camera Position
     private Vector3f lastCamPos;
@@ -147,12 +148,12 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
     // Shadow Render
     private DirectionalLightShadowRenderer dlsr;
     // Comand Controller
-    private Panel3D panelControl;
+    private Panel3DController panelControl;
     // Piece Move (selection) helper
     private Spatial piece_orig;
     private Geometry square_dest;
     // Language Bundle
-    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/util/lang");
+    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/common/lang");
     
     
     /**
@@ -595,9 +596,11 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
         motionPath.setCycle(false);
         motionPath.setCurveTension(.5f);
         motionPath.addListener(new MotionPathListener(){
+            @Override
             public void onWayPointReach(MotionEvent motionControl, int wayPointIndex){
                 if(wayPointIndex == 1){
                     enqueue(new Callable<Void>(){
+                        @Override
                         public Void call() throws Exception {
                             piece.setLocalRotation(new Quaternion().fromAngleNormalAxis(-FastMath.PI, Vector3f.UNIT_X));
                             String color = piece.getUserData("color");
@@ -697,6 +700,7 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
             final int colOrig = point.getSecond();
             // Clear Selected Square
             enqueue(new Callable<Void>(){
+                @Override
                 public Void call() throws Exception {
                     board_squares[rowOrig][colOrig].getMaterial().clearParam("Color");
                     board_squares[rowOrig][colOrig].getMaterial().clearParam("ColorMap");
@@ -739,6 +743,7 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
      */
     protected void restartBoard(){
         enqueue(new Callable<Void>(){
+            @Override
             public Void call() throws Exception {
                 piece_node.detachAllChildren();
                 rootNode.detachChild(piece_node);
@@ -758,6 +763,7 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
      */
     protected void startBoard(){
         enqueue(new Callable<Void>(){
+            @Override
             public Void call() throws Exception {
                 rootNode.attachChild(piece_node);
                 return null;
@@ -771,6 +777,7 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
      */
     private void playSound(final AudioNode sound){
         enqueue(new Callable<Void>(){
+            @Override
             public Void call() throws Exception {
                 sound.play();
                 return null;
@@ -782,7 +789,7 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
      * Add panel control to this view
      * @param control 
      */
-    public void addControl(Panel3D control){
+    public void addControl(Panel3DController control){
         panelControl = control;
     }
     
@@ -790,14 +797,13 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
      * Apply 3d panel settings
      */
     public void updateSettings(){
-        Settings newSettings  = Settings.getInstance();
         // Shadows
-        if(newSettings.getShadowsEnable())
+        if(Settings.getShadowsEnable())
             rootNode.setShadowMode(ShadowMode.CastAndReceive);
         else 
             rootNode.setShadowMode(ShadowMode.Off);
         // Shadows Filter 
-        switch (newSettings.getShadowFilterLevel()){
+        switch (Settings.getShadowFilterLevel()){
             case 0: dlsr.setEdgeFilteringMode(EdgeFilteringMode.Bilinear);break;
             case 1: dlsr.setEdgeFilteringMode(EdgeFilteringMode.Dither);break;
             case 2: dlsr.setEdgeFilteringMode(EdgeFilteringMode.Nearest);break;
@@ -807,11 +813,11 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
             default: System.err.println("Filtro Sombras: Invalido"); break;
         }
         // Sound
-        playSounds = newSettings.getAudioEnable();
+        playSounds = Settings.getAudioEnable();
         // Autorotation
-        autoRotation = newSettings.getAutoRotation();
+        autoRotation = Settings.getAutoRotation();
         // Show FPS
-        setDisplayFps(newSettings.getShowFPS());
+        setDisplayFps(Settings.getShowFPS());
     }
 
     /**
@@ -820,6 +826,7 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
      */
     public void printHudText(final String text){
         enqueue(new Callable<Void>(){
+            @Override
             public Void call() throws Exception {
                 hudText.setText(text);
                 hudDelay = System.currentTimeMillis() + 3500;
@@ -852,15 +859,16 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
     /**
      * Keys Action Listener
      */
+    @Override
     public void onAction(String name, boolean keyPressed, float tpf){
         // Enable auto-rotation
         if(name.equals("auto_rotation") && !keyPressed){
             if(autoRotation){
-                Settings.getInstance().setAutoRotation(false);
+                Settings.setAutoRotation(false);
                 autoRotation = false;
                 printHudText(lang.getString("CAM_AUTOROT_OFF"));
             } else {
-                Settings.getInstance().setAutoRotation(true);
+                Settings.setAutoRotation(true);
                 autoRotation = true;
                 printHudText(lang.getString("CAM_AUTOROT_ON"));
             }
@@ -868,7 +876,7 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
         // Top Cam Action
         if(name.equals("top_cam") && !keyPressed){
             if(lastCamera == cameras.GLOBAL) return;
-            Settings.getInstance().setAutoRotation(false);
+            Settings.setAutoRotation(false);
             autoRotation = false;
             enableInteraction(false);
             // Run Update Thread
@@ -887,7 +895,7 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
         if(name.equals("free_cam") && !keyPressed){
             if(lastCamera == cameras.FREE) return;
             enableInteraction(false);
-            Settings.getInstance().setAutoRotation(false);
+            Settings.setAutoRotation(false);
             autoRotation = false;
             // Run Update Thread
             new Thread(new Runnable(){
@@ -903,7 +911,7 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
         // Rotate Cam Action
         if(name.equals("rotate_cam") && !keyPressed){
             enableInteraction(false);
-            Settings.getInstance().setAutoRotation(false);
+            Settings.setAutoRotation(false);
             autoRotation = false;
             // Run Update Thread
             new Thread(new Runnable(){
@@ -931,10 +939,11 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
             }).start();
         }
     }
-
+   
     /**
      * Mouse Listener
      */
+    @Override
     public void onAnalog(String name, float intensity, float tpf){
         // Remove Previous selected piece
         if (name.equals("clear_target") && piece_orig != null){
@@ -971,10 +980,11 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
                         if(target.getUserData("piece_eated")) 
                             return;
                         // Select piece if has no previuos piece selected
-                        if( piece_orig == null){
+                        if(piece_orig == null){
                             piece_orig = board_pieces[row][col];
                             // Paint of green the square from origin
                             enqueue(new Callable<Void>(){
+                                @Override
                                 public Void call() throws Exception {
                                     board_squares[row][col].getMaterial().setTexture("ColorMap", select_dark_texture);
                                     return null;
@@ -988,6 +998,7 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
                             square_dest = board_squares[row][col];
                             // Paint target board position
                             enqueue(new Callable<Void>(){
+                                @Override
                                 public Void call() throws Exception {
                                     board_squares[row][col].getMaterial().setTexture("ColorMap", select_dark_texture);
                                     return null;

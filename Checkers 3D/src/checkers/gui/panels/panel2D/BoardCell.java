@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 
-import checkers.util.Texture;
+import checkers.common.Texture;
 
 
 /**
@@ -129,6 +129,7 @@ public class BoardCell extends JLabel implements Icon {
     /**
      * Paint Cell icons
      */
+    @Override
     public void paintIcon(Component c, Graphics g, int x, int y){
         if(square != null) doPaint(square, c, g, x, y);
         if(selection != null) doPaint(selection, c, g, x, y);
@@ -158,6 +159,7 @@ public class BoardCell extends JLabel implements Icon {
      * Retrieves icon width
      * @return 
      */
+    @Override
     public int getIconWidth(){
         return square.getIconWidth();
     }
@@ -166,6 +168,7 @@ public class BoardCell extends JLabel implements Icon {
      * Retrieves icon height
      * @return 
      */
+    @Override
     public int getIconHeight(){
         return square.getIconHeight();
     }

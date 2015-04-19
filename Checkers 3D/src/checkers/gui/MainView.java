@@ -1,6 +1,6 @@
 package checkers.gui;
 
-import checkers.gui.panels.IDamasPanel;
+import checkers.gui.panels.IBoardPanel;
 import checkers.gui.panels.LateralPanel;
 import checkers.gui.dialogs.EndGameDialog;
 import checkers.gui.dialogs.ClientGameDialog;
@@ -11,12 +11,13 @@ import checkers.gui.dialogs.OptionsDialog;
 import checkers.gui.panels.panel2D.Panel2D;
 import checkers.gui.panels.panel3D.Panel3D;
 import checkers.model.Player;
-import checkers.util.Point;
-import checkers.util.Settings;
+import checkers.common.Point;
+import checkers.common.Settings;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Observable;
@@ -42,14 +43,14 @@ import javax.swing.text.StyledDocument;
 public class MainView extends Observable {
     private JFrame window;
     private LateralPanel lateral_panel;
-    private IDamasPanel panel;
+    private IBoardPanel panel;
     // Menu items
     private JMenuItem start;
     private JMenuItem stop;
     // Some Dialogs
     private WaitingDialog waiting;
     // Language Bundle
-    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/util/lang");
+    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/common/lang");
     
     /**
      * Create Main View and Board 
@@ -57,7 +58,7 @@ public class MainView extends Observable {
      */
     public MainView(){
         // Crete Panel
-        panel = (Settings.getInstance().is3DView())? new Panel3D() : new Panel2D();
+        panel = (Settings.is3DView())? new Panel3D() : new Panel2D();
         // Create Main Frame
         createFrame();
     }
@@ -80,12 +81,12 @@ public class MainView extends Observable {
         // View Frame
         window = new JFrame(lang.getString("CHECKERS_3D"));
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);        
-        window.setMinimumSize(Settings.getInstance().getMinimunSize());
-        window.setSize(Settings.getInstance().getSize());
-        window.setPreferredSize(Settings.getInstance().getSize());
-        window.setLocation(Settings.getInstance().getLocation());
-        if(Settings.getInstance().is3DView()){
-            window.setExtendedState(Settings.getInstance().isMaximized());
+        window.setMinimumSize(Settings.getMinimunSize());
+        window.setSize(Settings.getSize());
+        window.setPreferredSize(Settings.getSize());
+        window.setLocation(Settings.getLocation());
+        if(Settings.is3DView()){
+            window.setExtendedState(Settings.isMaximized());
         } else {
             window.setExtendedState(JFrame.NORMAL);
             window.setResizable(false);
@@ -106,11 +107,11 @@ public class MainView extends Observable {
             @Override
             public void windowClosing(WindowEvent we){
                 if(window.getExtendedState() != JFrame.MAXIMIZED_BOTH){
-                    Settings.getInstance().setSize(window.getSize());
-                    Settings.getInstance().setLocation(window.getLocation());
+                    Settings.setSize(window.getSize());
+                    Settings.setLocation(window.getLocation());
                 }
-                Settings.getInstance().setMaximized(window.getExtendedState());
-                Settings.getInstance().saveSettings();
+                Settings.setMaximized(window.getExtendedState());
+                Settings.saveSettings();
             }
         });
         // Frame Menubar
@@ -130,7 +131,7 @@ public class MainView extends Observable {
         JMenuItem startLocal = new JMenuItem(lang.getString("NEW_LOCAL_GAME"));
         startLocal.setEnabled(true);
         start.add(startLocal);
-        startLocal.addActionListener(new java.awt.event.ActionListener(){
+        startLocal.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 showNewGame();
             }
@@ -139,7 +140,7 @@ public class MainView extends Observable {
         JMenuItem startRemote = new JMenuItem(lang.getString("NEW_REMOTE_GAME"));
         startRemote.setEnabled(true);
         start.add(startRemote);        
-        startRemote.addActionListener(new java.awt.event.ActionListener(){
+        startRemote.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 showNewRemoteGame();
             }
@@ -148,7 +149,7 @@ public class MainView extends Observable {
         JMenuItem conectRemote = new JMenuItem(lang.getString("CONNECT_TO_REMOTE_GAME"));
         conectRemote.setEnabled(true);
         start.add(conectRemote);        
-        conectRemote.addActionListener(new java.awt.event.ActionListener(){
+        conectRemote.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 showConnectRemoteGame();
             }
@@ -157,7 +158,7 @@ public class MainView extends Observable {
         stop = new JMenuItem(lang.getString("STOP"));
         stop.setEnabled(false);
         game.add(stop);
-        stop.addActionListener(new java.awt.event.ActionListener(){
+        stop.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 showStopGameMenu();
             }
@@ -166,7 +167,7 @@ public class MainView extends Observable {
         JMenuItem quit = new JMenuItem(lang.getString("EXIT"));
         quit.setEnabled(true);
         game.add(quit);
-        quit.addActionListener(new java.awt.event.ActionListener(){
+        quit.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 window.dispose();
                 System.exit(0);
@@ -175,7 +176,7 @@ public class MainView extends Observable {
         //
         JMenuItem options = new JMenuItem(lang.getString("PREFERENCES"));
         edit.add(options);
-        options.addActionListener(new java.awt.event.ActionListener(){
+        options.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 showOptionsMenu();
             }

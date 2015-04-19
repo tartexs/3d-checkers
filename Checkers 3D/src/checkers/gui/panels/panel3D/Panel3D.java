@@ -1,18 +1,14 @@
 package checkers.gui.panels.panel3D;
 
-import com.jme3.cinematic.events.CinematicEvent;
-import com.jme3.cinematic.events.CinematicEventListener;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
-import checkers.gui.panels.IDamasPanel;
+import checkers.gui.panels.IBoardPanel;
 import checkers.gui.panels.LoadingPanel;
 import checkers.model.Player;
-import checkers.util.Pair;
-import checkers.util.Point;
-import checkers.util.Settings;
+import checkers.common.Point;
+import checkers.common.Settings;
 import java.awt.BorderLayout;
 import java.util.Observer;
-import java.util.concurrent.Semaphore;
 import javax.swing.JPanel;
 
 /**
@@ -23,35 +19,33 @@ import javax.swing.JPanel;
  * 
  * @author Cristian Tardivo
  */
-public class Panel3D extends AbstractPanel3D implements IDamasPanel, CinematicEventListener {
-    // Semaphore synchronizer
-    Semaphore semaphore;
-    // Move send thread
-    Thread action;
-    // View Observer
-    private Observer observer;
+public class Panel3D extends AbstractPanel3D implements IBoardPanel {
+    // 3D Panel Controller and Sync
+    private Panel3DController pControl;
     
     /**
      * Default Panel3D Consturctor
      */
     public Panel3D(){
         super();
-        super.addControl(this);
-        semaphore = new Semaphore(0, true);
+        pControl = new Panel3DController();
+        super.addControl(pControl);
     }
     
     /**
      * Add observer to this view
      * @param obs 
      */
+    @Override
     public synchronized void addObserver(Observer obs){
-        observer = obs;
+        pControl.addObserver(obs);
     }
     
     /**
      * Create JPanel containing the 3d canvas
      * @return java JPanel
      */
+    @Override
     public JPanel getPanel(){
         // View Panel
         final JPanel mainPanel = new JPanel(new BorderLayout());
@@ -61,10 +55,10 @@ public class Panel3D extends AbstractPanel3D implements IDamasPanel, CinematicEv
         mainPanel.add(loadingPanel,BorderLayout.PAGE_START);
         // Settings
         settings = new AppSettings(true);
-        settings.setSamples(Settings.getInstance().getSamplesLevel());
-        settings.setVSync(Settings.getInstance().getVSync());
-        settings.setFrameRate(Settings.getInstance().getLimitFPS()? 30 : -1);
-        setDisplayFps(Settings.getInstance().getShowFPS());
+        settings.setSamples(Settings.getSamplesLevel());
+        settings.setVSync(Settings.getVSync());
+        settings.setFrameRate(Settings.getLimitFPS()? 30 : -1);
+        setDisplayFps(Settings.getShowFPS());
         setDisplayStatView(false);
         setPauseOnLostFocus(false);
         // 3D Canvas
@@ -102,14 +96,7 @@ public class Panel3D extends AbstractPanel3D implements IDamasPanel, CinematicEv
      */
     @Override
     public void restartBoard(){
-        // wait for others comands ends after clear board
-        if(action != null){
-            try {
-                action.join();
-            } catch (InterruptedException ex){
-                System.err.println("Restart Board Error: Can't join to action");
-            }
-        }
+        pControl.sync();
         super.restartBoard();
     }
 
@@ -165,6 +152,7 @@ public class Panel3D extends AbstractPanel3D implements IDamasPanel, CinematicEv
      * Sets camera position
      * @param jugador next player
      */
+    @Override
     public void setTurn(Player jugador){
         // Autorotation on, always rotate cam
         if(autoRotation){
@@ -175,14 +163,14 @@ public class Panel3D extends AbstractPanel3D implements IDamasPanel, CinematicEv
         }
         // Autorotation off, fix cam to local player (if not free cam or top view)
         if(!autoRotation){
-            boolean p1 = Settings.getInstance().getTypePlayerA() == Player.Type.local;
-            boolean p2 = Settings.getInstance().getTypePlayerB() == Player.Type.local;
+            boolean p1 = Settings.getTypePlayerA() == Player.Type.local;
+            boolean p2 = Settings.getTypePlayerB() == Player.Type.local;
             if(p1 && !p2){
-                fixCameraPos(Settings.getInstance().getColorPlayerA());
+                fixCameraPos(Settings.getColorPlayerA());
                 return;
             }
             if(!p1 && p2)
-                fixCameraPos(Settings.getInstance().getColorPlayerB());
+                fixCameraPos(Settings.getColorPlayerB());
         }
     }
     
@@ -202,50 +190,5 @@ public class Panel3D extends AbstractPanel3D implements IDamasPanel, CinematicEv
                 super.setPosCamera(cameras.PLAYER_2);
             }
         }
-    }
-      
-    /**
-     * onPlay cinematicEvent listener
-     * @param cinematic not used
-     */
-    public void onPlay(CinematicEvent cinematic){
-        try {
-            semaphore.acquire();
-        } catch (InterruptedException ex){
-            System.err.println("Can't Acquire Semaphore");
-        }
-    }
-
-    /**
-     * onPause cinematicEvent listener
-     * @param cinematic not used
-     */
-    public void onPause(CinematicEvent cinematic){
-        System.err.println("Cinematic Event Pause !!!");
-    }
-
-    /**
-     * onStop cinematicEvent listener
-     * @param cinematic 
-     */
-    public void onStop(CinematicEvent cinematic){
-        semaphore.release();
-    }
-    
-    /**
-     * Send Move to game Controller
-     * @param orig Origin move point
-     * @param dest Destinity move point
-     */
-    public void sendMove(final Point orig, final Point dest){
-        // Run Update Thread
-        action = new Thread(new Runnable(){
-            @Override
-            public void run(){
-                observer.update(null, new Pair(orig,dest));
-            }
-        });
-        action.setName("Send Move Thread");
-        action.start();
     }
 }

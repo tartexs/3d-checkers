@@ -10,8 +10,8 @@ import com.jme3.network.MessageListener;
 import com.jme3.network.Network;
 import com.jme3.network.Server;
 import com.jme3.network.serializing.Serializer;
-import checkers.util.Point;
-import checkers.util.Settings;
+import checkers.common.Point;
+import checkers.common.Settings;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
@@ -60,6 +60,12 @@ public class DNetwork extends Observable implements Runnable{
         else
             logger.log(Level.INFO,"Creating Client");
         listeners = new networkListeners();
+    }
+    
+    /**
+     * Start DNetwork connection thread
+     */
+    public void initDNetwork(){
         // Start Network thread
         network.start();
     }
@@ -67,6 +73,7 @@ public class DNetwork extends Observable implements Runnable{
     /**
      * Run network thread creation/connection
      */
+    @Override
     public void run(){
         if(isServer){
             // Try to create network server
@@ -74,7 +81,7 @@ public class DNetwork extends Observable implements Runnable{
                 createServer();
                 logger.log(Level.INFO,"Server Created");
                 logger.log(Level.INFO,"Network Started");
-            } catch (Exception ex){
+            } catch (IOException ex){
                 if(retries < 4){ // can't create server, retry
                     try {Thread.sleep(100);} catch (InterruptedException ex1){}
                     retries++;
@@ -86,7 +93,7 @@ public class DNetwork extends Observable implements Runnable{
                     notifyObservers("CANT_CRETE_SERVER");
                 }
             }
-        }else { // isClient
+        } else { // isClient
             // Try to create network client
             try {
                 createClient();
@@ -114,7 +121,7 @@ public class DNetwork extends Observable implements Runnable{
         // Register Message class
         Serializer.registerClass(DMessage.class);
         // Create server
-        int port = Settings.getInstance().getPort();
+        int port = Settings.getPort();
         server = Network.createServer(port);
         // Message Listener
         server.addMessageListener(listeners);
@@ -132,8 +139,8 @@ public class DNetwork extends Observable implements Runnable{
         // Registre Message Class
         Serializer.registerClass(DMessage.class);
         // Create Client
-        String ip = Settings.getInstance().getIP();
-        int port = Settings.getInstance().getPort();
+        String ip = Settings.getIP();
+        int port = Settings.getPort();
         client = Network.connectToServer(ip, port);
         // Message Listener
         client.addMessageListener(listeners);
@@ -206,7 +213,7 @@ public class DNetwork extends Observable implements Runnable{
      * @param color player color
      */
     public void sendMessage(String message, String name, String color){
-        String[] data  = {message,name,color};
+        String[] data = {message,name,color};
         sendData("CHAT_MESSAGE", data);
     }
     
@@ -245,6 +252,7 @@ public class DNetwork extends Observable implements Runnable{
          * @param source not used
          * @param m message received
          */
+        @Override
         public void messageReceived(Object source, Message m){
             setChanged();
             notifyObservers(m);
@@ -257,6 +265,7 @@ public class DNetwork extends Observable implements Runnable{
          * @param server current network server
          * @param conn new client connection
          */
+        @Override
         public void connectionAdded(Server server, HostedConnection conn){
             if(server.getConnections().size()>1){
                 conn.close("CONNECTION_LIMIT");
@@ -272,6 +281,7 @@ public class DNetwork extends Observable implements Runnable{
          * @param server not used
          * @param conn not used
          */
+        @Override
         public void connectionRemoved(Server server, HostedConnection conn){
             setChanged();
             notifyObservers("LOST_CONNECTION");
@@ -282,6 +292,7 @@ public class DNetwork extends Observable implements Runnable{
          * the new connection
          * @param c not used
          */
+        @Override
         public void clientConnected(Client c){
             setChanged();
             notifyObservers("CLIENT_CONNECT");
@@ -293,6 +304,7 @@ public class DNetwork extends Observable implements Runnable{
          * @param c not used
          * @param info connection close reason
          */
+        @Override
         public void clientDisconnected(Client c, DisconnectInfo info){
             if(info.reason.equals("SERVER_CLOSE")){
                 setChanged();
@@ -310,6 +322,7 @@ public class DNetwork extends Observable implements Runnable{
          * @param source not used
          * @param t not used
          */
+        @Override
         public void handleError(Object source, Throwable t){
             setChanged();
             notifyObservers("LOST_CONNECTION");

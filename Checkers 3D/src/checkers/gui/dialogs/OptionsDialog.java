@@ -1,6 +1,6 @@
 package checkers.gui.dialogs;
 
-import checkers.util.Settings;
+import checkers.common.Settings;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ResourceBundle;
@@ -16,7 +16,7 @@ import javax.swing.KeyStroke;
  * @author Cristian Tardivo
  */
 public class OptionsDialog extends javax.swing.JDialog {    
-    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/util/lang");
+    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/common/lang");
     // dialog result
     private boolean result;
     
@@ -29,7 +29,7 @@ public class OptionsDialog extends javax.swing.JDialog {
         super(parent, modal);
         // Set default values
         initComponents();
-        switch (Settings.getInstance().getSamplesLevel()){
+        switch (Settings.getSamplesLevel()){
             case 0: anti_aliasing.setSelectedIndex(0);break;
             case 2: anti_aliasing.setSelectedIndex(1);break;
             case 4: anti_aliasing.setSelectedIndex(2);break;
@@ -37,20 +37,20 @@ public class OptionsDialog extends javax.swing.JDialog {
             case 16: anti_aliasing.setSelectedIndex(4);break;
             default: System.err.println("Invalid Sample level in options view");break;
         }
-        switch (Settings.getInstance().getShadowsMapSize()){
+        switch (Settings.getShadowsMapSize()){
             case 512: shadow_size.setSelectedIndex(0);break;
             case 1024: shadow_size.setSelectedIndex(1);break;
             case 2048: shadow_size.setSelectedIndex(2);break;
             default: System.err.println("Invalid Shadows Map Size in options view");break;
         }
-        auto_rotation.setSelected(Settings.getInstance().getAutoRotation());
-        fpsLimit.setSelected(Settings.getInstance().getLimitFPS());
-        shadow.setSelected(Settings.getInstance().getShadowsEnable());
-        shadow_filter.setSelectedIndex(Settings.getInstance().getShadowFilterLevel());
-        show_fps.setSelected(Settings.getInstance().getShowFPS());
-        sound.setSelected(Settings.getInstance().getAudioEnable());
-        v_sync.setSelected(Settings.getInstance().getVSync());
-        board3d.setSelected(Settings.getInstance().is3DView());
+        auto_rotation.setSelected(Settings.getAutoRotation());
+        fpsLimit.setSelected(Settings.getLimitFPS());
+        shadow.setSelected(Settings.getShadowsEnable());
+        shadow_filter.setSelectedIndex(Settings.getShadowFilterLevel());
+        show_fps.setSelected(Settings.getShowFPS());
+        sound.setSelected(Settings.getAudioEnable());
+        v_sync.setSelected(Settings.getVSync());
+        board3d.setSelected(Settings.is3DView());
         this.getRootPane().setDefaultButton(boton_aceptar);
         // Key ESCAPE action
         KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
@@ -229,28 +229,28 @@ public class OptionsDialog extends javax.swing.JDialog {
      */
     private void boton_aceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_aceptarActionPerformed
         switch (anti_aliasing.getSelectedIndex()){
-            case 0: Settings.getInstance().setSamplesLevel(0);break;
-            case 1: Settings.getInstance().setSamplesLevel(2);break;
-            case 2: Settings.getInstance().setSamplesLevel(4);break;
-            case 3: Settings.getInstance().setSamplesLevel(8);break;
-            case 4: Settings.getInstance().setSamplesLevel(16);break;
+            case 0: Settings.setSamplesLevel(0);break;
+            case 1: Settings.setSamplesLevel(2);break;
+            case 2: Settings.setSamplesLevel(4);break;
+            case 3: Settings.setSamplesLevel(8);break;
+            case 4: Settings.setSamplesLevel(16);break;
             default: System.err.println("Invalid Sample level in options view");break;
         }
         switch (shadow_size.getSelectedIndex()){
-            case 0: Settings.getInstance().setShadowsMapSize(512);break;
-            case 1: Settings.getInstance().setShadowsMapSize(1024);break;
-            case 2: Settings.getInstance().setShadowsMapSize(2048);break;
+            case 0: Settings.setShadowsMapSize(512);break;
+            case 1: Settings.setShadowsMapSize(1024);break;
+            case 2: Settings.setShadowsMapSize(2048);break;
             default: System.err.println("Invalid Shadows Map Size in options view");break;
         }
-        Settings.getInstance().setAutoRotation(auto_rotation.isSelected());
-        Settings.getInstance().setLimitFPS(fpsLimit.isSelected());
-        Settings.getInstance().setShadowsEnable(shadow.isSelected());
-        Settings.getInstance().setShadowFilterLevel(shadow_filter.getSelectedIndex());
-        Settings.getInstance().setShowFPS(show_fps.isSelected());
-        Settings.getInstance().setAudioEnable(sound.isSelected());    
-        Settings.getInstance().setVSync(v_sync.isSelected());
-        Settings.getInstance().set3DView(board3d.isSelected());
-        Settings.getInstance().saveSettings();
+        Settings.setAutoRotation(auto_rotation.isSelected());
+        Settings.setLimitFPS(fpsLimit.isSelected());
+        Settings.setShadowsEnable(shadow.isSelected());
+        Settings.setShadowFilterLevel(shadow_filter.getSelectedIndex());
+        Settings.setShowFPS(show_fps.isSelected());
+        Settings.setAudioEnable(sound.isSelected());    
+        Settings.setVSync(v_sync.isSelected());
+        Settings.set3DView(board3d.isSelected());
+        Settings.saveSettings();
         result = true;
         dispose();
     }//GEN-LAST:event_boton_aceptarActionPerformed

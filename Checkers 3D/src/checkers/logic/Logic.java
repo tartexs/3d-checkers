@@ -5,7 +5,7 @@ import checkers.model.Board.Cells;
 import checkers.model.Model;
 import checkers.model.Player;
 import checkers.model.Player.Color;
-import checkers.util.Point;
+import checkers.common.Point;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -220,7 +220,7 @@ public class Logic {
      * @return linked list of pieces positions
      */
     public List<Point> getPieces(Color pColor){
-        List<Point> result = new LinkedList<Point>();
+        List<Point> result = new LinkedList<>();
         Point pos = new Point();
         for (int i = 0; i < 8; i++){
             pos.setFirst(i);

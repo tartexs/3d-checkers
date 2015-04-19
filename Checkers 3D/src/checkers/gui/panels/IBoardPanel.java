@@ -1,17 +1,17 @@
 package checkers.gui.panels;
 
 import checkers.model.Player;
-import checkers.util.Point;
+import checkers.common.Point;
 import java.util.Observer;
 import javax.swing.JPanel;
 
 /**
- * Interface IDamasPAnel
+ * Interface IBoardPanel
  * Defines Common interface for diferentes Panels (3D-2D)
  * 
  * @author Cristian Tardivo
  */
-public interface IDamasPanel {
+public interface IBoardPanel {
 
     /**
      * Retrieves main Panel

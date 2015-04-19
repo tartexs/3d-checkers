@@ -1,7 +1,7 @@
 package checkers.gui.dialogs;
 
 import checkers.model.Player;
-import checkers.util.Settings;
+import checkers.common.Settings;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ResourceBundle;
@@ -17,7 +17,7 @@ import javax.swing.KeyStroke;
  * @author Cristian Tardivo
  */
 public class ClientGameDialog extends javax.swing.JDialog {
-    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/util/lang");
+    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/common/lang");
     private boolean result;
         
     /**
@@ -29,9 +29,9 @@ public class ClientGameDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         // Set default data
-        name_field.setText(Settings.getInstance().getNamePlayerA());
-        ip_field.setText(Settings.getInstance().getIP());
-        port_field.setText(Settings.getInstance().getPort()+"");
+        name_field.setText(Settings.getNamePlayerA());
+        ip_field.setText(Settings.getIP());
+        port_field.setText(Settings.getPort()+"");
         this.getRootPane().setDefaultButton(con_but);
         // Key ESCAPE action
         KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
@@ -207,12 +207,12 @@ public class ClientGameDialog extends javax.swing.JDialog {
             ip_field.requestFocus();
             return;
         }    
-        Settings.getInstance().setNamePlayerB(name_field.getText());
-        Settings.getInstance().setTypePlayerA(Player.Type.remote);
-        Settings.getInstance().setTypePlayerB(Player.Type.local);
-        Settings.getInstance().setIP(ip_field.getText());
+        Settings.setNamePlayerB(name_field.getText());
+        Settings.setTypePlayerA(Player.Type.remote);
+        Settings.setTypePlayerB(Player.Type.local);
+        Settings.setIP(ip_field.getText());
         result = true;        
-        dispose();// TODO add your handling code here:
+        dispose();
     }//GEN-LAST:event_con_butActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

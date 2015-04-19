@@ -3,7 +3,7 @@ package checkers.gui.dialogs;
 import checkers.ia.iaPlayer;
 import checkers.model.Player;
 import checkers.model.Player.Color;
-import checkers.util.Settings;
+import checkers.common.Settings;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ResourceBundle;
@@ -19,7 +19,7 @@ import javax.swing.KeyStroke;
  * @author Cristian Tardivo
  */
 public class NewGameDialog extends javax.swing.JDialog {
-    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/util/lang");
+    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/common/lang");
     private boolean result;
     
     
@@ -32,20 +32,20 @@ public class NewGameDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         // Set default data
-        Player1_name.setText(Settings.getInstance().getNamePlayerA());
-        Player2_name.setText(Settings.getInstance().getNamePlayerB());
-        if(Settings.getInstance().getColorPlayerA().equals(Color.red)){
+        Player1_name.setText(Settings.getNamePlayerA());
+        Player2_name.setText(Settings.getNamePlayerB());
+        if(Settings.getColorPlayerA().equals(Color.red)){
             Red_1.setSelected(true);
             Black_2.setSelected(true);
         } else {
             Black_1.setSelected(true);
             Red_2.setSelected(true);
         }
-        cpu_player1.setSelected(Settings.getInstance().getTypePlayerA() == Player.Type.artificial);
-        cpu_player2.setSelected(Settings.getInstance().getTypePlayerB() == Player.Type.artificial);
-        easy_butt.setSelected(Settings.getInstance().getDifficult() == iaPlayer.Difficult.easy);
-        moderate_butt.setSelected(Settings.getInstance().getDifficult() == iaPlayer.Difficult.moderate);
-        hard_butt.setSelected(Settings.getInstance().getDifficult() == iaPlayer.Difficult.hard);
+        cpu_player1.setSelected(Settings.getTypePlayerA() == Player.Type.artificial);
+        cpu_player2.setSelected(Settings.getTypePlayerB() == Player.Type.artificial);
+        easy_butt.setSelected(Settings.getDifficult() == iaPlayer.Difficult.easy);
+        moderate_butt.setSelected(Settings.getDifficult() == iaPlayer.Difficult.moderate);
+        hard_butt.setSelected(Settings.getDifficult() == iaPlayer.Difficult.hard);
         this.getRootPane().setDefaultButton(buttonAcept);
         // Key ESCAPE action
         KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
@@ -348,23 +348,23 @@ public class NewGameDialog extends javax.swing.JDialog {
             Player2_name.requestFocus();
             return;
         }        
-        Settings.getInstance().setNamePlayerA(Player1_name.getText());
-        Settings.getInstance().setNamePlayerB(Player2_name.getText());
+        Settings.setNamePlayerA(Player1_name.getText());
+        Settings.setNamePlayerB(Player2_name.getText());
         if(Red_1.isSelected()){
-            Settings.getInstance().setColorPlayerA(Player.Color.red);
-            Settings.getInstance().setColorPlayerB(Player.Color.black);
+            Settings.setColorPlayerA(Player.Color.red);
+            Settings.setColorPlayerB(Player.Color.black);
         } else {
-            Settings.getInstance().setColorPlayerA(Player.Color.black);
-            Settings.getInstance().setColorPlayerB(Player.Color.red);
+            Settings.setColorPlayerA(Player.Color.black);
+            Settings.setColorPlayerB(Player.Color.red);
         }
-        Settings.getInstance().setTypePlayerA(cpu_player1.isSelected()?Player.Type.artificial:Player.Type.local);
-        Settings.getInstance().setTypePlayerB(cpu_player2.isSelected()?Player.Type.artificial:Player.Type.local);
+        Settings.setTypePlayerA(cpu_player1.isSelected()?Player.Type.artificial:Player.Type.local);
+        Settings.setTypePlayerB(cpu_player2.isSelected()?Player.Type.artificial:Player.Type.local);
         if(easy_butt.isSelected())
-            Settings.getInstance().setDifficult(iaPlayer.Difficult.easy);
+            Settings.setDifficult(iaPlayer.Difficult.easy);
         if(moderate_butt.isSelected())
-            Settings.getInstance().setDifficult(iaPlayer.Difficult.moderate);
+            Settings.setDifficult(iaPlayer.Difficult.moderate);
         if(hard_butt.isSelected())
-            Settings.getInstance().setDifficult(iaPlayer.Difficult.hard);
+            Settings.setDifficult(iaPlayer.Difficult.hard);
         result = true;
         dispose();
     }//GEN-LAST:event_buttonAceptActionPerformed

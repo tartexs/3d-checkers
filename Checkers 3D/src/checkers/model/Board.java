@@ -1,6 +1,6 @@
 package checkers.model;
 
-import checkers.util.Point;
+import checkers.common.Point;
 
 /**
  * Class Board
@@ -58,8 +58,8 @@ public final class Board implements Cloneable {
     @Override
     public Board clone(){
         Board res = new Board();
-        for (int i = 0; i < board.length; i++){
-            for (int j = 0; j < board[i].length; j++){
+        for(int i = 0; i < board.length; i++){
+            for(int j = 0; j < board[i].length; j++){
                 res.board[i][j] = this.board[i][j];
             }            
         }

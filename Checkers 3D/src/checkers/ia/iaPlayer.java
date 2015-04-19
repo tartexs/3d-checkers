@@ -2,7 +2,7 @@ package checkers.ia;
 
 import checkers.logic.Logic;
 import checkers.model.Model;
-import checkers.util.Settings;
+import checkers.common.Settings;
 import java.util.List;
 import java.util.Observable;
 
@@ -72,6 +72,7 @@ public class iaPlayer extends Observable implements Runnable {
      * Thread run Method
      * performs min max search
      */
+    @Override
     public void run(){
         // Extends default model to iaModel
         iaModel model = new iaModel(defaultModel);
@@ -81,7 +82,7 @@ public class iaPlayer extends Observable implements Runnable {
         // Reset logic to default model
         logic.setModel(defaultModel);
         // Time Delay
-        if(!Settings.getInstance().is3DView())
+        if(!Settings.is3DView())
             try {Thread.sleep(delay);} catch (InterruptedException ex){}
         // Inform changes: Return best move
         if(started){

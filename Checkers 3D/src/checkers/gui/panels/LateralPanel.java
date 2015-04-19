@@ -21,7 +21,7 @@ import javax.swing.text.StyleConstants;
  * @author Cristian Tardivo
  */
 public class LateralPanel extends javax.swing.JPanel {
-    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/util/lang");
+    private static final ResourceBundle lang = ResourceBundle.getBundle("checkers/common/lang");
     
     private final JPanel noWrapPanel;
     public final JTextPane chatPanel;

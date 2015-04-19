@@ -1,14 +1,14 @@
 package checkers.gui.panels.panel2D;
 
-import checkers.util.Sound;
-import checkers.gui.panels.IDamasPanel;
-import checkers.util.Sound.Sounds;
-import checkers.util.Texture;
-import checkers.util.Texture.Textures;
+import checkers.common.Sound;
+import checkers.gui.panels.IBoardPanel;
+import checkers.common.Sound.Sounds;
+import checkers.common.Texture;
+import checkers.common.Texture.Textures;
 import checkers.model.Player;
-import checkers.util.Pair;
-import checkers.util.Point;
-import checkers.util.Settings;
+import checkers.common.Pair;
+import checkers.common.Point;
+import checkers.common.Settings;
 import java.awt.Cursor;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -28,7 +28,7 @@ import javax.swing.JPanel;
  * 
  * @author Cristian Tardivo
  */
-public class Panel2D  extends Observable implements IDamasPanel {
+public class Panel2D  extends Observable implements IBoardPanel {
     // Main Panel
     private JPanel mainPanel;
     // Cells Matrix
@@ -54,7 +54,7 @@ public class Panel2D  extends Observable implements IDamasPanel {
     private Texture turn_empty_text = new Texture(Texture.Textures.clear,boardSize,10);
     // Some Status
     private boolean interaction = false;
-    private boolean playSound = true;
+    private boolean playSound = Settings.getAudioEnable();
     // Piece Moving Helpers
     private Point move_start;
     private Point move_end;
@@ -66,6 +66,7 @@ public class Panel2D  extends Observable implements IDamasPanel {
      * Create base view2D JPanel
      * @return 
      */
+    @Override
     public JPanel getPanel(){
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());
@@ -101,7 +102,7 @@ public class Panel2D  extends Observable implements IDamasPanel {
         // Cells Click listener
         MouseListener mouseList = new MouseAdapter(){
             @Override
-            public void mouseClicked(MouseEvent evt){SelecPiece(evt);}
+            public void mouseClicked(MouseEvent evt){selecPiece(evt);}
         };
         //
         for (int row = 0; row < 8; row++){
@@ -122,6 +123,7 @@ public class Panel2D  extends Observable implements IDamasPanel {
     /**
      * Start board (load pieces)
      */
+    @Override
     public void startBoard(){
         for (int row = 0; row < 8; row++){
             for (int col = 0; col < 8; col++){                
@@ -140,6 +142,7 @@ public class Panel2D  extends Observable implements IDamasPanel {
     /**
      * Reset board (remove pieces and selection)
      */
+    @Override
     public void restartBoard(){
         for (int row = 0; row < 8; row++)
             for (int col = 0; col < 8; col++){
@@ -154,6 +157,7 @@ public class Panel2D  extends Observable implements IDamasPanel {
      * Enable or disable board interaction (mouse clicks)
      * @param status 
      */
+    @Override
     public void enableInteraction(boolean status){
         interaction = status;
         for (int row = 0; row < 8; row++){
@@ -170,6 +174,7 @@ public class Panel2D  extends Observable implements IDamasPanel {
      * Set current player turn
      * @param jugador 
      */
+    @Override
     public void setTurn(Player jugador){
         if(jugador.isBlack()){
             black_turn.setIcon(turn_texture);
@@ -185,6 +190,7 @@ public class Panel2D  extends Observable implements IDamasPanel {
      * @param orig
      * @param dest 
      */
+    @Override
     public void movePiece(Point orig, Point dest){
         if(playSound)
             moveSound.play();
@@ -197,6 +203,7 @@ public class Panel2D  extends Observable implements IDamasPanel {
      * Eat piece (remove piece from board)
      * @param pos 
      */
+    @Override
     public void eatPiece(Point pos){
         if(playSound)
             eatSound.play();
@@ -207,6 +214,7 @@ public class Panel2D  extends Observable implements IDamasPanel {
      * Make a piece Queen (change piece texture to queen)
      * @param pos 
      */
+    @Override
     public void toQueen(Point pos){
         if(playSound)
             queenSound.play();
@@ -221,6 +229,7 @@ public class Panel2D  extends Observable implements IDamasPanel {
      * Clear cells selection
      * @param points 
      */
+    @Override
     public void clearSelection(Point... points){
         if(playSound && points.length > 1)
                 wrongSound.play();
@@ -231,8 +240,9 @@ public class Panel2D  extends Observable implements IDamasPanel {
     /**
      * Update panel settings
      */
+    @Override
     public void updateSettings(){        
-        playSound = Settings.getInstance().getAudioEnable();
+        playSound = Settings.getAudioEnable();
     }
     
     /**
@@ -240,7 +250,7 @@ public class Panel2D  extends Observable implements IDamasPanel {
      * Send move to observer when it's necesary
      * @param evt 
      */
-    private void SelecPiece(MouseEvent evt){
+    private void selecPiece(MouseEvent evt){
         // Interaction disabled ignore mouse events
         if(!interaction)
             return;

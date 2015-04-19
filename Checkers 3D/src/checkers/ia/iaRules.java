@@ -2,8 +2,8 @@ package checkers.ia;
 
 import checkers.logic.Logic;
 import checkers.model.Player.Color;
-import checkers.util.Pair;
-import checkers.util.Point;
+import checkers.common.Pair;
+import checkers.common.Point;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,7 +45,7 @@ public class iaRules {
         else
            pieces = gameLogic.getPieces(Color.black);
         // Get valid moves in current State (Model)
-        List<Pair<Point,Point>> validMoves = new LinkedList<Pair<Point,Point>>();
+        List<Pair<Point,Point>> validMoves = new LinkedList<>();
         for(Point pos : pieces){
             // Simple Moves
             Point upLeft = new Point(pos.getFirst() - 1, pos.getSecond() - 1);
@@ -67,7 +67,7 @@ public class iaRules {
             if(gameLogic.isValidMove(pos,downRight2)) validMoves.add(new Pair(pos,downRight2));
         }
         // Apply Moves to current Model and Clone
-        List<iaModel> result = new LinkedList<iaModel>();
+        List<iaModel> result = new LinkedList<>();
         for(Pair pair : validMoves){
             result.add(applyMove(current, pair));
         }
