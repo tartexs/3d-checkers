@@ -566,9 +566,12 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
         MotionEvent motionEvent = new MotionEvent(piece,motionPath);
         // Motion Listener for Play sound and others
         motionEvent.addListener(new CinematicEventListener(){
-            public void onPlay(CinematicEvent cinematic){}
-            public void onPause(CinematicEvent cinematic){}
-            public void onStop(CinematicEvent cinematic){if(playSounds) playSound(move_audio);}
+            @Override public void onPlay(CinematicEvent cinematic){}
+            @Override public void onPause(CinematicEvent cinematic){}
+            @Override public void onStop(CinematicEvent cinematic){
+                if(playSounds) 
+                    playSound(move_audio);
+            }
         });
         motionEvent.addListener(panelControl);
         // Motion Data
@@ -623,9 +626,12 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
         MotionEvent motionEvent = new MotionEvent(piece,motionPath);
         // Motion Listener
         motionEvent.addListener(new CinematicEventListener(){
-            public void onPlay(CinematicEvent cinematic){if(playSounds) playSound(queen_audio);}
-            public void onPause(CinematicEvent cinematic){}
-            public void onStop(CinematicEvent cinematic){}
+            @Override public void onPlay(CinematicEvent cinematic){
+                if(playSounds) 
+                    playSound(queen_audio);
+            }
+            @Override public void onPause(CinematicEvent cinematic){}
+            @Override public void onStop(CinematicEvent cinematic){}
         });
         motionEvent.addListener(panelControl);
         // Motion Data
@@ -673,9 +679,12 @@ public abstract class AbstractPanel3D extends SimpleApplication implements Analo
         MotionEvent motionEvent = new MotionEvent(piece,motionPath);
         // Listerner for sound and others
         motionEvent.addListener(new CinematicEventListener(){
-            public void onPlay(CinematicEvent cinematic){if(playSounds) playSound(eat_audio);}
-            public void onPause(CinematicEvent cinematic){}
-            public void onStop(CinematicEvent cinematic){}
+            @Override public void onPlay(CinematicEvent cinematic){
+                if(playSounds)
+                    playSound(eat_audio);
+            }
+            @Override public void onPause(CinematicEvent cinematic){}
+            @Override public void onStop(CinematicEvent cinematic){}
         });
         motionEvent.addListener(panelControl);
         // Motion Data

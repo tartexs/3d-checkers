@@ -31,12 +31,12 @@ public class DMessage extends AbstractMessage {
      * @param command message command
      * @param data message data
      */
-    public DMessage(String command,Object data){
-        this.command = command;
+    public DMessage(String ncommand,Object ndata){
+        command = ncommand;
         if(data instanceof String[]){
-            this.strArry = (String[])data;
+            strArry = (String[])ndata;
         } else {
-            this.data = data;
+            data = ndata;
         }
     }
     

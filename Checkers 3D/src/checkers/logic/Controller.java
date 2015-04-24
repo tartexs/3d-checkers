@@ -47,7 +47,7 @@ public class Controller implements Observer {
     /**
      * Start controller Components
      */
-    public void init() {
+    public void initController() {
         model.getCronometer().addObserver(this);
         model.addObserver(this);
         view.addObserver(this);

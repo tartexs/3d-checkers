@@ -16,6 +16,6 @@ public class Start {
         Logic logic = new Logic(model);
         MainView view = new MainView();
         Controller controller = new Controller(logic,view);
-        controller.init();
+        controller.initController();
     }
 }

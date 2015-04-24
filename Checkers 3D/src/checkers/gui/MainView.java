@@ -132,7 +132,7 @@ public class MainView extends Observable {
         startLocal.setEnabled(true);
         start.add(startLocal);
         startLocal.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
+            @Override public void actionPerformed(ActionEvent e){
                 showNewGame();
             }
         });
@@ -141,7 +141,7 @@ public class MainView extends Observable {
         startRemote.setEnabled(true);
         start.add(startRemote);        
         startRemote.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
+            @Override public void actionPerformed(ActionEvent e){
                 showNewRemoteGame();
             }
         });
@@ -150,7 +150,7 @@ public class MainView extends Observable {
         conectRemote.setEnabled(true);
         start.add(conectRemote);        
         conectRemote.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
+            @Override public void actionPerformed(ActionEvent e){
                 showConnectRemoteGame();
             }
         });
@@ -159,7 +159,7 @@ public class MainView extends Observable {
         stop.setEnabled(false);
         game.add(stop);
         stop.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
+            @Override public void actionPerformed(ActionEvent e){
                 showStopGameMenu();
             }
         });
@@ -168,7 +168,7 @@ public class MainView extends Observable {
         quit.setEnabled(true);
         game.add(quit);
         quit.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
+            @Override public void actionPerformed(ActionEvent e){
                 window.dispose();
                 System.exit(0);
             }
@@ -177,7 +177,7 @@ public class MainView extends Observable {
         JMenuItem options = new JMenuItem(lang.getString("PREFERENCES"));
         edit.add(options);
         options.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
+            @Override public void actionPerformed(ActionEvent e){
                 showOptionsMenu();
             }
         });
